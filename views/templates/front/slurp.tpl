@@ -1,3 +1,4 @@
+{extends file='layouts/layout-full-width.tpl'}
 {**
 * The MIT License (MIT)
 * 

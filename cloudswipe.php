@@ -31,13 +31,13 @@ if (!defined("_PS_VERSION_")) {
     exit;
 }
 
-class CloudSwipePayments extends PaymentModule
+class CloudSwipe extends PaymentModule
 {
     public function __construct()
     {
-        $this->name = "cloudswipepayments";
+        $this->name = "cloudswipe";
         $this->tab = "payments_gateways";
-        $this->version = "1.0.3";
+        $this->version = "1.0.4";
         $this->ps_versions_compliancy = array("min" => "1.6", "max" => _PS_VERSION_);
         $this->author = "CloudSwipe";
         $this->controllers = array("invoice", "receipt", "slurp");
@@ -46,12 +46,12 @@ class CloudSwipePayments extends PaymentModule
         parent::__construct();
 
         $this->module_key = "b070eebc9aa650797615a0a9b5598108";
-        $this->displayName = $this->l("CloudSwipe Payments");
+        $this->displayName = $this->l("CloudSwipe");
         $this->description = $this->l("Secure hosted payments for your online store");
 
-        require_once(dirname(__FILE__)."/lib/CloudSwipe.php");
-        CloudSwipe::setEnvironment("production");
-        CloudSwipe::setSecretKey(Configuration::get("CLOUDSWIPE_SECRET_KEY"));
+        require_once(dirname(__FILE__)."/lib/CloudSwipe/Boot.php");
+        CloudSwipeEnvironment::set("development");
+        CloudSwipeSecretKey::set(Configuration::get("CLOUDSWIPE_SECRET_KEY"));
     }
 
     public function install()
@@ -62,7 +62,6 @@ class CloudSwipePayments extends PaymentModule
 
         $this->registerHook("paymentOptions");
         $this->registerHook("displayPayment");
-        $this->registerHook("paymentReturn");
 
         return true;
     }
@@ -105,48 +104,6 @@ class CloudSwipePayments extends PaymentModule
                ->setAction($link);
 
         return array($option);
-    }
-
-    /**
-     * This hook is used to display the order confirmation page.
-     *
-     * @param array $params Hook parameters
-     *
-     * @return string Hook HTML
-     */
-    public function hookPaymentReturn($params)
-    {
-        if (!$this->active) {
-            return '';
-        }
-
-        /** @var Order $order */
-        $order = $params['objOrder'];
-
-        $currency = new Currency($order->id_currency);
-
-        if (isset($order->reference) && $order->reference) {
-            $totalToPay = (float) $order->getTotalPaid($currency);
-            $reference = $order->reference;
-        } else {
-            $totalToPay = $order->total_paid_tax_incl;
-            $reference = $this->l('Unknown');
-        }
-
-        if ($order->getCurrentOrderState()->id != Configuration::get('PS_OS_ERROR')) {
-            $this->context->smarty->assign('status', 'ok');
-        }
-
-        $this->context->smarty->assign(
-            [
-                'id_order'  => $order->id,
-                'reference' => $reference,
-                'params'    => $params,
-                'total'     => Tools::displayPrice($totalToPay, $currency, false),
-            ]
-        );
-
-        return $this->display(__FILE__, 'views/templates/front/confirmation.tpl');
     }
 
     public function getContent()
