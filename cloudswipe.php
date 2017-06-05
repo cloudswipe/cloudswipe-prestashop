@@ -31,7 +31,7 @@ if (!defined("_PS_VERSION_")) {
     exit;
 }
 
-class CloudSwipe extends PaymentModule
+class Cloudswipe extends PaymentModule
 {
     public function __construct()
     {
