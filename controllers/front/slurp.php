@@ -33,14 +33,16 @@ class CloudSwipeSlurpModuleFrontController extends ModuleFrontController
     {
         parent::initContent();
 
-        if (defined('_TB_VERSION_')) {
+        if (defined("_TB_VERSION_")) {
             $this->context->smarty->assign(array(
-                'status' => 'ok',
+                "status" => "ok",
             ));
 
-            $this->setTemplate('slurp.tpl');
-        } else {
+            $this->setTemplate("slurp.tpl");
+        } elseif (version_compare(_PS_VERSION_, "1.7", ">=")) {
             $this->setTemplate("module:cloudswipe/views/templates/front/slurp.tpl");
+        } else {
+            $this->setTemplate("slurp.tpl");
         }
     }
 }

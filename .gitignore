@@ -1,6 +1,3 @@
-/tests
-/vendor
 /composer.lock
 /composer.json
-/codeception.yml
 /config.xml
