@@ -50,7 +50,7 @@ class CloudSwipe extends PaymentModule
         $this->description = $this->l("Secure hosted payments for your online store");
 
         require_once(dirname(__FILE__)."/lib/CloudSwipe/Boot.php");
-        CloudSwipeEnvironment::set("development");
+        CloudSwipeEnvironment::set("production");
         CloudSwipeSecretKey::set(Configuration::get("CLOUDSWIPE_SECRET_KEY"));
     }
 
@@ -61,29 +61,8 @@ class CloudSwipe extends PaymentModule
         }
 
         $this->registerHook("paymentOptions");
-        $this->registerHook("displayPayment");
 
         return true;
-    }
-
-    public function hookDisplayPayment($params)
-    {
-        if (!$this->active) {
-            return;
-        }
-
-        $link = $this->context->link->getModuleLink(
-            $this->name,
-            "invoice",
-            array(),
-            true
-        );
-
-        $this->context->smarty->assign(array(
-            'cloudswipe_payment_page' => $link,
-        ));
-
-        return $this->display(__FILE__, 'views/templates/hook/payment.tpl');
     }
 
     public function hookPaymentOptions($params)
