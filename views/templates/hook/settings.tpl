@@ -26,13 +26,13 @@
 * @license https://opensource.org/licenses/MIT MIT
 *}
 
-<link href="{$module_dir}views/css/style.css" rel="stylesheet" type="text/css" media="all"/>
+<link href="{$module_dir|escape:'htmlall':'UTF-8'}views/css/style.css" rel="stylesheet" type="text/css" media="all"/>
 <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
 
 <div class="row cloudswipe-header">
   <div class="col-md-2">
     <h1>
-      <img src="{$module_dir}views/img/cloudswipe-logo.png"
+      <img src="{$module_dir|escape:'htmlall':'UTF-8'}views/img/cloudswipe-logo.png"
           class="cloudswipe-logo" />
     </h1>
   </div>
@@ -143,7 +143,7 @@
     </div>
   </div>
 
-  <form action="{$smarty.server.REQUEST_URI}" method="post">
+  <form action="{$smarty.server.REQUEST_URI|escape:'htmlall':'UTF-8'}" method="post">
     <div class="row">
       <div class="form-group col-md-4">
         <label for="cloudswipe_secret_key" class="control-label">Secret Key</label>
@@ -151,7 +151,7 @@
               id="cloudswipe_secret_key"
               name="cloudswipe_secret_key"
               class="form-control"
-              value="{$cloudswipe_secret_key}" />
+              value="{$cloudswipe_secret_key|escape:'htmlall':'UTF-8'}" />
       </div>
     </div>
     <input type="submit" value="Save Settings" name="submit_cloudswipe"
