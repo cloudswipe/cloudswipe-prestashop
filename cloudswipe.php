@@ -50,7 +50,7 @@ class CloudSwipe extends PaymentModule
         $this->description = $this->l("Secure hosted payments for your online store");
 
         require_once(dirname(__FILE__)."/lib/CloudSwipe/Boot.php");
-        CloudSwipeEnvironment::set("production");
+        CloudSwipeEnvironment::set("development");
         CloudSwipeSecretKey::set(Configuration::get("CLOUDSWIPE_SECRET_KEY"));
     }
 
@@ -117,7 +117,11 @@ class CloudSwipe extends PaymentModule
             return "";
         }
         /** @var Order $order */
-        $order = $params["objOrder"];
+        if (version_compare(_PS_VERSION_, "1.7", ">=")) {
+            $order = $params["order"];
+        } else {
+            $order = $params["objOrder"];
+        }
         $currency = new Currency($order->id_currency);
         if (isset($order->reference) && $order->reference) {
             $totalToPay = (float) $order->getTotalPaid($currency);

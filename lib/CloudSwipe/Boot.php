@@ -27,7 +27,6 @@
 * @license   https://opensource.org/licenses/MIT MIT
 */
 
-require_once(dirname(__FILE__)."/../../vendor/autoload.php");
 require_once(dirname(__FILE__)."/Environment.php");
 require_once(dirname(__FILE__)."/SecretKey.php");
 require_once(dirname(__FILE__)."/Resource.php");

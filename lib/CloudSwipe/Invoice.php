@@ -40,7 +40,7 @@ class CloudSwipeInvoice extends CloudSwipeResource
         $invoice->attributes = $attributes;
         $http = new CloudSwipeHttp();
         $response = $http->post($invoice);
-        $json = json_decode($response->getBody(), true);
+        $json = json_decode($response, true);
 
         return self::load($json);
     } 
@@ -51,7 +51,7 @@ class CloudSwipeInvoice extends CloudSwipeResource
         $invoice->id = $id;
         $http = new CloudSwipeHttp();
         $response = $http->get($invoice);
-        $json = json_decode($response->getBody(), true);
+        $json = json_decode($response, true);
 
         return self::load($json);
     }
@@ -71,7 +71,7 @@ class CloudSwipeInvoice extends CloudSwipeResource
         $http = new CloudSwipeHttp();
         $this->attributes = $attributes;
         $response = $http->patch($this);
-        $json = json_decode($response->getBody(), true);
+        $json = json_decode($response, true);
 
         return CloudSwipeInvoice::load($json);
     }

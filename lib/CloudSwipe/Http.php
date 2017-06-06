@@ -29,14 +29,11 @@
 
 class CloudSwipeHttp
 {
-    public $client;
+    public $curl;
 
-    public function __construct($client=null)
+    public function __construct()
     {
-        if ($client)
-            $this->client = $client;
-        else
-            $this->client = new \GuzzleHttp\Client();
+        $this->curl = curl_init();
     }
 
     public function post($resource)
@@ -51,12 +48,6 @@ class CloudSwipeHttp
         return $this->request("PATCH", CloudSwipeUrl::update($resource), $options);
     }
 
-    public function delete($resource)
-    {
-        $options = $this->options("DELETE", $resource);
-        return $this->request("DELETE", CloudSwipeUrl::delete($resource), $options);
-    }
-
     public function get($resource)
     {
         $options = $this->options("GET", $resource);
@@ -68,33 +59,43 @@ class CloudSwipeHttp
 
     public function request($method, $url, $options=[])
     {
-        if (defined('_TB_VERSION_')) {
-            $request = $this->client->request($method, $url, $options);
+        curl_setopt_array($this->curl, $options);
+        curl_setopt($this->curl, CURLOPT_URL, $url);
 
-            return $request;
+        $response = curl_exec($this->curl);
+        $info = curl_getinfo($this->curl);
+
+        if (!$response) {
+            die(curl_error($this->curl));
         }
 
-        $request = $this->client->createRequest($method, $url, $options);
+        curl_close($this->curl);
 
-        return $this->client->send($request);
+        return substr($response, $info["header_size"]);
     }
 
     public function options($method, $resource)
     {
-        $class = get_class($resource);
         $options = array(
-            "auth" => array(CloudSwipeSecretKey::get(), ""),
-            "headers" => array("Accept" => "application/vnd.api+json")
+            CURLOPT_VERBOSE => 1,
+            CURLOPT_HEADER => 1,
+            CURLOPT_RETURNTRANSFER => 1,
+            CURLOPT_USERAGENT => "CloudSwipe PrestaShop",
+            CURLOPT_USERPWD => CloudSwipeSecretKey::get() . ":"
         );
 
-        switch ($method) {
-        case "POST":
-            $options["headers"]["Content-Type"] = "application/vnd.api+json";
-            $options["json"] = $resource->toArray();
-        case "PATCH":
-            $options["headers"]["Content-Type"] = "application/vnd.api+json";
-            $options["json"] = $resource->toArray();
+        $headers = array(
+            "Accept: application/vnd.api+json"
+        );
+
+        if (in_array($method, ["POST", "PATCH"])) {
+            $headers[] = "Content-Type: application/vnd.api+json";
+            $options[CURLOPT_CUSTOMREQUEST] = "POST";
+            $options[CURLOPT_POST] = 1;
+            $options[CURLOPT_POSTFIELDS] = $resource->toJson();
         }
+
+        $options[CURLOPT_HTTPHEADER] = $headers;
 
         return $options;
     }
