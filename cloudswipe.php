@@ -50,7 +50,7 @@ class CloudSwipe extends PaymentModule
         $this->description = $this->l("Secure hosted payments for your online store");
 
         require_once(dirname(__FILE__)."/lib/CloudSwipe/Boot.php");
-        CloudSwipeEnvironment::set("development");
+        CloudSwipeEnvironment::set("production");
         CloudSwipeSecretKey::set(Configuration::get("CLOUDSWIPE_SECRET_KEY"));
     }
 
