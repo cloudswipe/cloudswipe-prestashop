@@ -27,16 +27,19 @@
 * @license   https://opensource.org/licenses/MIT MIT
 */
 
-require_once(dirname(__FILE__)."/Environment.php");
-require_once(dirname(__FILE__)."/SecretKey.php");
-require_once(dirname(__FILE__)."/Resource.php");
-require_once(dirname(__FILE__)."/Address.php");
-require_once(dirname(__FILE__)."/Customer.php");
-require_once(dirname(__FILE__)."/Http.php");
-require_once(dirname(__FILE__)."/Invoice.php");
-require_once(dirname(__FILE__)."/LineItems.php");
-require_once(dirname(__FILE__)."/LineTotals.php");
-require_once(dirname(__FILE__)."/MetaData.php");
-require_once(dirname(__FILE__)."/Name.php");
-require_once(dirname(__FILE__)."/Url.php");
-require_once(dirname(__FILE__)."/Payment.php");
+class CloudSwipePayment extends CloudSwipeResource
+{
+    public function __construct()
+    {
+        parent::__construct("payments");
+    }
+
+    public static function load($json)
+    {
+        $payment = new self();
+        $payment->id = $json["id"];
+        $payment->attributes = $json["attributes"];
+
+        return $payment;
+    }
+}

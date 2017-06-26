@@ -54,7 +54,7 @@ class CloudSwipeReceiptModuleFrontController extends ModuleFrontController
                 (int)Configuration::get("PS_OS_PAYMENT"),
                 $invoice->attributes["total"] / 100,
                 "Credit Card",
-                null,
+                $this->buildOrderMessage($invoice),
                 array(),
                 null,
                 false,
@@ -111,6 +111,23 @@ class CloudSwipeReceiptModuleFrontController extends ModuleFrontController
 
             die($e->getMessage());
         }
+    }
+
+    private function buildOrderMessage($invoice)
+    {
+        $message_parts = array();
+
+        if ($invoice->payment) {
+            $message_parts[]= "Authorization ID: " . $invoice->payment->attributes["authorization"];
+            $message_parts[]= "AVS Response: " . $invoice->payment->attributes["avs_result_code"];
+            $message_parts[]= "CVV Response: " . $invoice->payment->attributes["cvv_result_code"];
+
+            if ($invoice->payment->credit_card) {
+                $message_parts[]= "Last 4 digits of card: " . $invoice->payment->credit_card->attributes["number"];
+            }
+        }
+
+        return implode(", ", $message_parts);
     }
 
     private function validateInvoice($invoice)

@@ -90,7 +90,7 @@ class CloudSwipeHttp
 
         if (in_array($method, ["POST", "PATCH"])) {
             $headers[] = "Content-Type: application/vnd.api+json";
-            $options[CURLOPT_CUSTOMREQUEST] = "POST";
+            $options[CURLOPT_CUSTOMREQUEST] = $method;
             $options[CURLOPT_POST] = 1;
             $options[CURLOPT_POSTFIELDS] = $resource->toJson();
         }
