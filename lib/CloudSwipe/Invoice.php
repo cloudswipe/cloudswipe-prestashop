@@ -78,17 +78,20 @@ class CloudSwipeInvoice extends CloudSwipeResource
         return CloudSwipeInvoice::load($json);
     }
 
-    private static function loadPayment($json) {
-        if ($json["included"]) {
-            $payment_json = array_filter($json["included"], function($included) {
-                if ($included["type"] == "payments") {
-                    return $included;
-                }
-            });
+    private static function loadPayment($json)
+    {
+        if (!$json["included"]) {
+            return;
+        }
 
-            if ($payment_json) {
-                return CloudSwipePayment::load(array_values($payment_json)[0]);
+        $payment_json = array_filter($json["included"], function($included) {
+            if ($included["type"] == "payments") {
+                return $included;
             }
+        });
+
+        if ($payment_json) {
+            return CloudSwipePayment::load(array_values($payment_json)[0]);
         }
     }
 }

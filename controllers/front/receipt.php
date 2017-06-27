@@ -122,12 +122,12 @@ class CloudSwipeReceiptModuleFrontController extends ModuleFrontController
             $message_parts[]= "AVS Response: " . $invoice->payment->attributes["avs_result_code"];
             $message_parts[]= "CVV Response: " . $invoice->payment->attributes["cvv_result_code"];
 
-            if ($invoice->payment->credit_card) {
-                $message_parts[]= "Last 4 digits of card: " . $invoice->payment->credit_card->attributes["number"];
+            if ($invoice->payment->creditCard) {
+                $message_parts[]= "Credit Card: " . $invoice->payment->creditCard->attributes["number"];
             }
         }
 
-        return implode(", ", $message_parts);
+        return implode("\n", $message_parts);
     }
 
     private function validateInvoice($invoice)

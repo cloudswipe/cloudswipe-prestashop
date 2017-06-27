@@ -29,6 +29,8 @@
 
 class CloudSwipePayment extends CloudSwipeResource
 {
+    public $creditCard;
+
     public function __construct()
     {
         parent::__construct("payments");
@@ -39,7 +41,25 @@ class CloudSwipePayment extends CloudSwipeResource
         $payment = new self();
         $payment->id = $json["id"];
         $payment->attributes = $json["attributes"];
+        $payment->creditCard = self::loadCreditCard($json);
 
         return $payment;
+    }
+
+    private static function loadCreditCard($json)
+    {
+        if (!$json["included"]) {
+            return;
+        }
+
+        $credit_card_json = array_filter($json["included"], function($included) {
+            if ($included["type"] == "credit_cards") {
+                return $included;
+            }
+        });
+
+        if ($credit_card_json) {
+            return CloudSwipeCreditCard::load(array_values($credit_card_json)[0]);
+        }
     }
 }
