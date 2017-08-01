@@ -66,7 +66,7 @@ class CloudSwipeLineItems
 
         $row[] = $psProduct["name"];
 
-        if ($psProduct["attributes_small"]) {
+        if (in_array("attributes_small", $psProduct)) {
             $row[] = $psProduct["attributes_small"];
         } else {
             $row[] = "N/A";
